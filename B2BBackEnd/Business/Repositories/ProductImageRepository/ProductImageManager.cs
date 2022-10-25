@@ -52,7 +52,8 @@ namespace Business.Repositories.ProductImageRepository
                     {
                         Id = 0,
                         ImageUrl = fileName,
-                        ProductId = productImageAddDto.ProductId
+                        ProductId = productImageAddDto.ProductId,
+                        IsMainImage = false
                     };
                     await _productImageDal.Add(productImage);
                 }
@@ -85,7 +86,9 @@ namespace Business.Repositories.ProductImageRepository
             {
                 Id = productImageUpdateDto.Id,
                 ImageUrl = fileName,
-                ProductId = productImageUpdateDto.ProductId
+                ProductId = productImageUpdateDto.ProductId,
+                IsMainImage = productImageUpdateDto.IsMainImage
+
             };
 
             await _productImageDal.Update(productImage);
@@ -134,6 +137,23 @@ namespace Business.Repositories.ProductImageRepository
                 return new ErrorResult("Eklediðiniz resim .jpg, .jpeg, .gif, .png türlerinden biri olmalýdýr!");
             }
             return new SuccessResult();
+        }
+
+        //[SecuredAspect()]
+        //[TransactionAspect()]
+        public async Task<IResult> SetMainImage(int id)
+        {
+            var productImage= await _productImageDal.Get(p => p.Id == id);
+            var productImages = await _productImageDal.GetAll(p => p.ProductId == productImage.ProductId);
+            foreach (var item in productImages)
+            {
+                item.IsMainImage=false;
+                await _productImageDal.Update(item);
+            }
+
+            productImage.IsMainImage = true;
+            await _productImageDal.Update(productImage);
+            return new SuccessResult(ProductImageMessages.MainImageIsUpdated);
         }
     }
 }
