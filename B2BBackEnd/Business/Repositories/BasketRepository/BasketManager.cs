@@ -41,16 +41,14 @@ namespace Business.Repositories.BasketRepository
         [SecuredAspect()]
         [ValidationAspect(typeof(BasketValidator))]
         [RemoveCacheAspect("IBasketService.Get")]
-
         public async Task<IResult> Update(Basket basket)
         {
             await _basketDal.Update(basket);
             return new SuccessResult(BasketMessages.Updated);
         }
 
-        [SecuredAspect()]
+        //[SecuredAspect()]
         [RemoveCacheAspect("IBasketService.Get")]
-
         public async Task<IResult> Delete(Basket basket)
         {
             await _basketDal.Delete(basket);
@@ -64,6 +62,12 @@ namespace Business.Repositories.BasketRepository
         {
             return new SuccessDataResult<List<Basket>>(await _basketDal.GetAll());
         }
+
+        public async Task<List<Basket>> GetListByProductId(int productId)
+        {
+            return await _basketDal.GetAll(p => p.ProductId == productId);
+        }
+
         // [SecuredAspect()]
         [CacheAspect()]
         [PerformanceAspect()]

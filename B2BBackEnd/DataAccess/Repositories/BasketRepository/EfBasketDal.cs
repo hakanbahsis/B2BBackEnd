@@ -25,7 +25,7 @@ namespace DataAccess.Repositories.BasketRepository
                     {
                         Id = basket.Id,
                         CustomerId = basket.CustomerId,
-                        ProductId = basket.Id,
+                        ProductId = basket.ProductId,
                         ProductName = product.Name,
                         Price = basket.Price,
                         Quantity = basket.Quantity,
